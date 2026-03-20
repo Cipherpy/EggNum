@@ -268,7 +268,7 @@ export default function App() {
   return (
     <div className="app">
       <header>
-        <h1>EggNum</h1>
+        <h1>EggNumerator</h1>
         <p>Upload an image — YOLO runs <strong>entirely in your browser</strong>, no data leaves your device.</p>
       </header>
 
