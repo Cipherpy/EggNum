@@ -1,0 +1,220 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #0f172a;
+  color: #e2e8f0;
+  min-height: 100vh;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+header h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #facc15, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+header p {
+  color: #94a3b8;
+  margin-top: 0.4rem;
+  font-size: 0.95rem;
+}
+
+header p strong { color: #f59e0b; }
+
+.card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 1.2rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 760px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+/* Drop zone */
+.drop-zone {
+  border: 2px dashed #475569;
+  border-radius: 0.8rem;
+  padding: 3rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  position: relative;
+}
+
+.drop-zone.dragover,
+.drop-zone:hover {
+  border-color: #f59e0b;
+  background: rgba(245,158,11,0.05);
+}
+
+.drop-zone input[type=file] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.drop-zone .icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.drop-zone p { color: #94a3b8; font-size: 0.9rem; }
+.drop-zone strong { color: #f59e0b; }
+
+/* Status bar */
+.status-bar {
+  margin-top: 1.2rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: #0f172a;
+  font-size: 0.85rem;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.4rem;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #475569;
+  border-top-color: #f59e0b;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Count display */
+.count-display {
+  margin-top: 1.4rem;
+  background: linear-gradient(135deg, #064e3b, #065f46);
+  border: 1px solid #059669;
+  border-radius: 0.8rem;
+  padding: 1.2rem 1.5rem;
+  text-align: center;
+}
+
+.count-display .label {
+  font-size: 0.85rem;
+  color: #6ee7b7;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.count-display .number {
+  font-size: 4rem;
+  font-weight: 900;
+  color: #34d399;
+  line-height: 1;
+  margin-top: 0.2rem;
+}
+
+.count-display .sub {
+  font-size: 0.85rem;
+  color: #6ee7b7;
+  margin-top: 0.2rem;
+}
+
+/* Canvas wrapper */
+.canvas-wrap {
+  margin-top: 1.4rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  border: 1px solid #334155;
+  position: relative;
+  user-select: none;
+}
+
+.canvas-wrap canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  will-change: transform;
+}
+
+.zoom-reset-btn {
+  position: absolute;
+  bottom: 0.6rem;
+  right: 0.6rem;
+  padding: 0.3rem 0.7rem;
+  background: rgba(15, 23, 42, 0.8);
+  color: #94a3b8;
+  border: 1px solid #475569;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+}
+.zoom-reset-btn:hover { color: #e2e8f0; border-color: #64748b; }
+
+/* Controls */
+.controls {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.control-group { flex: 1; min-width: 140px; }
+
+.control-group label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 0.3rem;
+}
+
+.control-group label span { color: #f59e0b; font-weight: 700; }
+
+.control-group input[type=range] {
+  width: 100%;
+  accent-color: #f59e0b;
+}
+
+/* Reset button */
+.reset-btn {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.7rem;
+  background: #334155;
+  color: #e2e8f0;
+  border: none;
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.reset-btn:hover { background: #475569; }
+
+footer {
+  margin-top: 2.5rem;
+  font-size: 0.78rem;
+  color: #475569;
+  text-align: center;
+}
+
+footer a { color: #f59e0b; }
