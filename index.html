@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EggNum — Egg Counter</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #facc15, #f97316);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    header p {
+      color: #94a3b8;
+      margin-top: .4rem;
+      font-size: .95rem;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 1.2rem;
+      padding: 2rem;
+      width: 100%;
+      max-width: 760px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.4);
+    }
+
+    /* ── Drop zone ── */
+    #drop-zone {
+      border: 2px dashed #475569;
+      border-radius: .8rem;
+      padding: 3rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      position: relative;
+    }
+    #drop-zone.dragover, #drop-zone:hover {
+      border-color: #f59e0b;
+      background: rgba(245,158,11,.05);
+    }
+    #drop-zone input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    }
+    #drop-zone .icon {
+      font-size: 3rem;
+      margin-bottom: .75rem;
+      display: block;
+    }
+    #drop-zone p {
+      color: #94a3b8;
+      font-size: .9rem;
+    }
+    #drop-zone strong { color: #f59e0b; }
+
+    /* ── Status bar ── */
+    #status-bar {
+      margin-top: 1.2rem;
+      padding: .6rem 1rem;
+      border-radius: .5rem;
+      background: #0f172a;
+      font-size: .85rem;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      min-height: 2.4rem;
+    }
+    #status-bar .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid #475569;
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+      flex-shrink: 0;
+      display: none;
+    }
+    #status-bar.loading .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Count display ── */
+    #count-display {
+      display: none;
+      margin-top: 1.4rem;
+      background: linear-gradient(135deg, #78350f, #92400e);
+      border: 1px solid #b45309;
+      border-radius: .8rem;
+      padding: 1.2rem 1.5rem;
+      text-align: center;
+    }
+    #count-display .label { font-size: .85rem; color: #fde68a; letter-spacing: .05em; text-transform: uppercase; }
+    #count-display .number {
+      font-size: 4rem;
+      font-weight: 900;
+      color: #facc15;
+      line-height: 1;
+      margin-top: .2rem;
+    }
+    #count-display .sub { font-size: .85rem; color: #fde68a; margin-top: .2rem; }
+
+    /* ── Canvas ── */
+    #canvas-wrap {
+      display: none;
+      margin-top: 1.4rem;
+      border-radius: .8rem;
+      overflow: hidden;
+      border: 1px solid #334155;
+    }
+    #result-canvas { display: block; width: 100%; height: auto; }
+
+    /* ── Reset btn ── */
+    #reset-btn {
+      display: none;
+      margin-top: 1rem;
+      width: 100%;
+      padding: .7rem;
+      background: #334155;
+      color: #e2e8f0;
+      border: none;
+      border-radius: .6rem;
+      font-size: .9rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    #reset-btn:hover { background: #475569; }
+
+    /* ── Threshold controls ── */
+    .controls {
+      margin-top: 1.2rem;
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .control-group { flex: 1; min-width: 140px; }
+    .control-group label {
+      display: flex; justify-content: space-between;
+      font-size: .8rem; color: #94a3b8; margin-bottom: .3rem;
+    }
+    .control-group label span { color: #f59e0b; font-weight: 700; }
+    .control-group input[type=range] {
+      width: 100%; accent-color: #f59e0b;
+    }
+
+    footer {
+      margin-top: 2.5rem;
+      font-size: .78rem;
+      color: #475569;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🥚 EggNum</h1>
+  <p>Upload an image — YOLO runs <strong>entirely in your browser</strong>, no data leaves your device.</p>
+</header>
+
+<div class="card">
+
+  <div id="drop-zone">
+    <input type="file" id="file-input" accept="image/*" />
+    <span class="icon">📂</span>
+    <p><strong>Click to choose</strong> or drag &amp; drop an image here</p>
+    <p style="margin-top:.3rem">PNG, JPG, JPEG, WebP supported</p>
+  </div>
+
+  <div class="controls">
+    <div class="control-group">
+      <label>Confidence threshold <span id="conf-val">0.25</span></label>
+      <input type="range" id="conf-slider" min="0.05" max="0.95" step="0.05" value="0.25" />
+    </div>
+    <div class="control-group">
+      <label>IoU threshold <span id="iou-val">0.45</span></label>
+      <input type="range" id="iou-slider" min="0.05" max="0.95" step="0.05" value="0.45" />
+    </div>
+  </div>
+
+  <div id="status-bar">
+    <div class="spinner"></div>
+    <span id="status-text">Loading YOLO model… (first visit downloads ~39 MB)</span>
+  </div>
+
+  <div id="count-display">
+    <div class="label">Eggs Detected</div>
+    <div class="number" id="egg-count">0</div>
+    <div class="sub" id="egg-sub"></div>
+  </div>
+
+  <div id="canvas-wrap">
+    <canvas id="result-canvas"></canvas>
+  </div>
+
+  <button id="reset-btn">Upload another image</button>
+</div>
+
+<footer>
+  Powered by <a href="https://onnxruntime.ai/" style="color:#f59e0b">ONNX Runtime Web</a> &amp;
+  <a href="https://ultralytics.com/yolo" style="color:#f59e0b">YOLOv11</a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.20.1/dist/ort.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
